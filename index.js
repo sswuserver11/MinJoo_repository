@@ -1,42 +1,39 @@
-const { Router } = require("express");
+'use strict';
 
-const express = require("express"),
-layouts = require("express-ejs-layouts"),
-app = express(),
-router = require('express').Router(),
-homeController = require("./controllers/homeController"),
-errorController = require("./controllers/errorController"),
-db = require("./models/index"),
-    Sequelize = db.Sequelize;
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development'; //node_env가 development,production임
+const config = require(__dirname + '/../config/config.js')[env];
+const db = {};
 
-//ejs를 템플릿용으로 사용
-app.set("views", __dirname + "/views");
-app.set("view engine","ejs");
-app.set("port", process.env.PORT || 80);
+let sequelize = new Sequelize(config.database, config.username, config.password, config);
+// if (config.use_env_variable) {
+//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
+// } else {
+//   sequelize = new Sequelize(config.database, config.username, config.password, config);
+// }
 
+// fs
+//   .readdirSync(__dirname)
+//   .filter(file => {
+//     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+//   })
+//   .forEach(file => {
+//     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+//     db[model.name] = model;
+//   });
 
-//url 인코드와 json파라미터 처리를 위한 body-parser사용
-router.use(
-    express.urlencoded({
-        extended: false
-    })
-);
-router.use(express.json());
-//express.js가 이 패키지를 추가 미들웨어로 사용하도록
-router.use(layouts);
-router.use(express.static(__dirname+"/public"));
+// Object.keys(db).forEach(modelName => {
+//   if (db[modelName].associate) {
+//     db[modelName].associate(db);
+//   }
+// });
 
-router.get("/filter",homeController.showLogin);
-router.get("/login",homeController.saveLogin);
-router.get("/login/join",homeController.joinpage);
-// router.use(errorController.pageNotFoundError);
-// router.use(errorController.internalServerError);
+db.sequelize = sequelize; //인스턴스
+db.Sequelize = Sequelize; //라이브러리
 
-app.use("/",router);//루트로 들어오면 router로 연결시켜줌
+db.memberinfo = require("./memberinfo.js")(sequelize,Sequelize);//memberinfo모델 불러오기
 
-app.listen(app.get("port"), () => {
-    console.log(`Server running at http://localhost:${app.get("port")}`);
-
-});
-
-module.exports = router;
+module.exports = db;

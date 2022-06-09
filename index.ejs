@@ -1,0 +1,44 @@
+<h2 class="login_title">로그인</h2> 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Login</th>
+            <th>FindID</th>
+            <th>FindPW</th>
+            <th>SignIn</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% memberinfo.forEach(memberinfo => { %>
+        <tr>
+            <td> <%= memberinfo.email %>  </td>
+            <td> <%= memberinfo.password %> </td>
+            <td>
+                <form class="input-box" action="/login" method="POST">
+                    <input type="text" name="useremail" placeholder="아이디"
+                        autocomplete="off" required>
+                    <input type="password" name="password" placeholder="비밀번호"
+                        autocomplete="off" required>
+                    <input type="submit" name="로그인" value="로그인">
+                </form>
+            </td>
+        </tr>}; %>
+    </tbody>
+    
+            
+         <div id="forgot">
+            <a href="">아이디/비밀번호 찾기</a>
+            <a href="http://localhost/login/join">회원가입</a>
+         </div> 
+         
+        <input type="submit" name="로그인" value="로그인"> 
+    
+    </form> 
+</table>
+
+<% subscribers.forEach (s => { %>
+    <p><%= s.email %></p>
+    <p><%= s.password %></p>
+<% }); %>
